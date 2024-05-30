@@ -2,8 +2,10 @@ package main
 
 func main() {
 	// we have an array with n fields and we need tell if exist a sum of pair equal 8
-	arr1 := [4]int{1, 2, 4, 9}
+	arr1 := []int{1, 2, 4, 9}
 	target := 8
+
+	existPerfectPair(arr1, target)
 
 }
 
