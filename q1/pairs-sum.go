@@ -1,14 +1,13 @@
 package main
 
+import "fmt"
+
 func main() {
-	// we have an array with n fields and we need tell if exist a sum of pair equal 8
-	arr1 := []int{1, 2, 4, 9}
+	arr1 := []int{1, 5, 4, 7}
 	target := 8
-
 	existPerfectPair(arr1, target)
-
+	fmt.Printf("The answer is: %v ", existPerfectPair(arr1, target))
 }
-
 func existPerfectPair(ar []int, target int) bool {
 	left, right := 0, len(ar)-1
 
