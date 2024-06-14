@@ -16,7 +16,6 @@ func rotate(nums []int, k int) {
 func reverse(nums []int, start, end int) {
 	for start < end {
 		nums[start], nums[end] = nums[end], nums[start]
-		println(nums[start], nums[end])
 		start++
 		end--
 	}

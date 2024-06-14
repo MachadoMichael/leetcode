@@ -8,6 +8,18 @@ func main() {
 	fmt.Printf("%v ", mergeSortedArrays(arr1, arr2))
 }
 
+
+
+1 - 5 =>1
+2 - 5 =>2
+3 - 5 => 3
+14 - 5 =>5
+14 - 6 =>6
+14 -17 =>14 
+
+
+ 
+
 func mergeSortedArrays(arr1, arr2 []int) []int {
 	var result []int
 	i, j := 0, 0
@@ -23,6 +35,7 @@ func mergeSortedArrays(arr1, arr2 []int) []int {
 
 	}
 
+	
 	for i < len(arr1) {
 		result = append(result, arr1[i])
 		i++
@@ -35,3 +48,9 @@ func mergeSortedArrays(arr1, arr2 []int) []int {
 
 	return result
 }
+
+
+Arrayx.Sort()
+
+[1,2,3]
+BigO(n)
