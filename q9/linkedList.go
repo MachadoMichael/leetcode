@@ -45,6 +45,17 @@ func (l *LinkedList) insert(node *LinkedItem, index int) *LinkedList {
 	return l
 }
 
+func (l *LinkedList) getNode(index int) *LinkedItem {
+	var selectedNode *LinkedItem
+	i := 0
+	for i < index-1 {
+		selectedNode = findNode(l.Head)
+		i++
+	}
+
+	return selectedNode
+}
+
 func findNode(node *LinkedItem) *LinkedItem {
 	return node.Next
 }
@@ -62,7 +73,17 @@ func main() {
 		Next: nil,
 	}
 
+	tail3 := LinkedItem{
+		Node: 99,
+		Next: nil,
+	}
+
 	fmt.Println(linked.Head)
 	linked.prepend(&tail2)
-	fmt.Println(linked.Head)
+	linked.prepend(&tail2)
+	linked.prepend(&tail2)
+	linked.prepend(&tail2)
+	linked.prepend(&tail2)
+	linked.insert(&tail3, 2)
+	fmt.Println(linked.getNode(2))
 }
