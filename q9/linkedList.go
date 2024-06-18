@@ -28,6 +28,27 @@ func (l *LinkedList) prepend(node *LinkedItem) *LinkedList {
 	return l
 }
 
+func (l *LinkedList) insert(node *LinkedItem, index int) *LinkedList {
+	i := 0
+	var selectedNode *LinkedItem
+	var beforeNode *LinkedItem
+	for i < index {
+		if i == index-1 {
+			beforeNode = selectedNode
+		}
+		selectedNode = findNode(l.Head)
+	}
+
+	beforeNode.Next = node
+	node.Next = selectedNode
+	l.Lenght++
+	return l
+}
+
+func findNode(node *LinkedItem) *LinkedItem {
+	return node.Next
+}
+
 func main() {
 	fmt.Println("vim-go")
 
