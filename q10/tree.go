@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -181,7 +182,6 @@ func (t *Tree) printTreeStructured(node *Node, level int) {
 }
 
 func (t *Tree) searchComment(node *Node, comment string, level int) bool {
-
 	start := time.Now()
 	if node == nil {
 		return false
@@ -189,7 +189,7 @@ func (t *Tree) searchComment(node *Node, comment string, level int) bool {
 
 	if node.Value == comment {
 		elapsed := time.Since(start)
-		fmt.Printf("Found comment: %s at level %d\n and searchTime: %v", node.Value, level, elapsed)
+		fmt.Printf("\n\n Basic Search --> Found comment: %s at level %d\n and searchTime: %v", node.Value, level, elapsed)
 		return true
 	}
 
@@ -214,15 +214,68 @@ func (t *Tree) SaveToJSON(filename string) error {
 	return encoder.Encode(t)
 }
 
+func (t *Tree) searchWithRoutines(node *Node, comment string, wg *sync.WaitGroup, foundChan chan<- bool) {
+	defer wg.Done()
+	if node == nil {
+		return
+	}
+
+	if node.Value == comment {
+		foundChan <- true
+		return
+	}
+
+	if len(node.Children) > 0 {
+		for _, child := range node.Children {
+			wg.Add(1)
+			go t.searchWithRoutines(child, comment, wg, foundChan)
+		}
+	} else {
+		// If no children, check this node
+		if node.Value == comment {
+			foundChan <- true
+		}
+	}
+}
+
 func main() {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	tree := generateTreeWithRandomNodes(r, 50)
+	tree := generateTreeWithRandomNodes(r, 10000000)
 
-	tree.printTreeStructured(tree.Children[0], 0)
+	// tree.printTreeStructured(tree.Children[0], 0)
 
-	if err := tree.SaveToJSON("./tree.json"); err != nil {
-		fmt.Printf("Error saving tree to JSON: %v\n", err)
+	// if err := tree.SaveToJSON("./tree.json"); err != nil {
+	// 	fmt.Printf("Error saving tree to JSON: %v\n", err)
+	// }
+	//
+	// Searching for a comment using goroutines
+	commentToSearch := "Amazing!"
+	wg := &sync.WaitGroup{}
+	foundChan := make(chan bool)
+
+	wg.Add(1)
+	startTime := time.Now()
+	go tree.searchWithRoutines(tree.Children[0], commentToSearch, wg, foundChan)
+
+	go func() {
+		wg.Wait()
+		close(foundChan)
+	}()
+
+	found := false
+	for result := range foundChan {
+		if result {
+			found = true
+			break
+		}
+	}
+
+	if found {
+		elapse := time.Since(startTime)
+		fmt.Printf("Search with goroutines --> Comment '%s' found!\n, time: %v", commentToSearch, elapse)
+	} else {
+		fmt.Printf("Comment '%s' not found.\n", commentToSearch)
 	}
 
 	b := tree.searchComment(tree.Children[0], "Amazing!", 0)
